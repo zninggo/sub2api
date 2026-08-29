@@ -446,6 +446,11 @@ const (
 	// SettingKeyOpsMetricsIntervalSeconds controls the ops metrics collector interval (>=60).
 	SettingKeyOpsMetricsIntervalSeconds = "ops_metrics_interval_seconds"
 
+	// SettingKeyOpsUpstreamModelSyncIntervalSeconds controls the auto-sync upstream
+	// model_mapping interval. Accounts with extra.auto_sync_models_enabled=true are
+	// probed at this interval. Default 21600 (6 hours).
+	SettingKeyOpsUpstreamModelSyncIntervalSeconds = "ops_upstream_model_sync_interval_seconds"
+
 	// SettingKeyOpsAdvancedSettings stores JSON config for ops advanced settings (data retention, aggregation).
 	SettingKeyOpsAdvancedSettings = "ops_advanced_settings"
 

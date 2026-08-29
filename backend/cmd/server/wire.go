@@ -124,6 +124,7 @@ func provideCleanup(
 	quotaFlusher *service.UserPlatformQuotaUsageFlusher,
 	upstreamBillingProbe *service.UpstreamBillingProbeService,
 	ollamaCloudUsage *service.OllamaCloudUsageService,
+	opsUpstreamModelSync *service.OpsUpstreamModelSyncService,
 	auditLog *service.AuditLogService,
 	openAIAutoReset *service.OpenAIQuotaAutoResetService,
 	promptAudit *securityaudit.PromptService,
@@ -221,6 +222,12 @@ func provideCleanup(
 			{"OpsMetricsCollector", func() error {
 				if opsMetricsCollector != nil {
 					opsMetricsCollector.Stop()
+				}
+				return nil
+			}},
+			{"OpsUpstreamModelSyncService", func() error {
+				if opsUpstreamModelSync != nil {
+					opsUpstreamModelSync.Stop()
 				}
 				return nil
 			}},

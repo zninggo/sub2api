@@ -212,6 +212,10 @@ export default {
         batchCompleted: '已完成 {count} 个账号的倍率探测',
         batchPartial: '倍率探测部分完成：成功 {success} 个，失败 {failed} 个'
       },
+      upstreamModelSync: {
+        autoSync: '自动同步上游模型列表',
+        autoSyncHint: '定期从上游 /v1/models 接口拉取模型列表并更新本账号的模型映射，上游已下线的模型会自动移除。',
+      },
       allPrivacyModes: '全部Privacy状态',
       privacyUnset: '未设置',
       privacyTrainingOff: '已关闭训练数据共享',

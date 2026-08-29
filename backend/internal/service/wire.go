@@ -561,6 +561,23 @@ func ProvideOpsCleanupService(
 	return svc
 }
 
+// ProvideOpsUpstreamModelSyncService creates and starts the periodic upstream
+// model_mapping auto-sync runner.
+func ProvideOpsUpstreamModelSyncService(
+	opsRepo OpsRepository,
+	settingRepo SettingRepository,
+	accountRepo AccountRepository,
+	accountTestSvc *AccountTestService,
+	adminService AdminService,
+	cfg *config.Config,
+	db *sql.DB,
+	redisClient *redis.Client,
+) *OpsUpstreamModelSyncService {
+	svc := NewOpsUpstreamModelSyncService(opsRepo, settingRepo, accountRepo, accountTestSvc, adminService, cfg, db, redisClient)
+	svc.Start()
+	return svc
+}
+
 func ProvideOpsSystemLogSink(opsRepo OpsRepository) *OpsSystemLogSink {
 	sink := NewOpsSystemLogSink(opsRepo)
 	sink.Start()
@@ -888,6 +905,7 @@ var ProviderSet = wire.NewSet(
 	ProvideOpsAggregationService,
 	ProvideOpsAlertEvaluatorService,
 	ProvideOpsCleanupService,
+	ProvideOpsUpstreamModelSyncService,
 	ProvideOpsScheduledReportService,
 	NewEmailService,
 	NewNotificationEmailService,

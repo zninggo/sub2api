@@ -1830,6 +1830,25 @@
         />
       </div>
 
+      <!-- 自动同步上游模型列表 -->
+      <div
+        v-if="account?.type === 'apikey'"
+        class="flex items-center justify-between gap-4 border-t border-gray-200 pt-4 dark:border-dark-600"
+      >
+        <div>
+          <label class="input-label mb-0">{{ t('admin.accounts.upstreamModelSync.autoSync') }}</label>
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            {{ t('admin.accounts.upstreamModelSync.autoSyncHint') }}
+          </p>
+        </div>
+        <Toggle
+          :model-value="autoSyncModelsEnabled"
+          data-testid="auto-sync-models-toggle"
+          :aria-label="t('admin.accounts.upstreamModelSync.autoSync')"
+          @update:model-value="autoSyncModelsEnabled = $event"
+        />
+      </div>
+
       <OllamaCloudUsageSettings
         v-if="account?.ollama_cloud_usage?.eligible"
         :account="account"
@@ -3195,6 +3214,7 @@ const autoResetCreditEnabled = ref(false)
 const autoResetCredit5hThreshold = ref(100)
 const autoResetCredit7dThreshold = ref(100)
 const upstreamBillingAutoProbeEnabled = ref(false)
+const autoSyncModelsEnabled = ref(false)
 const upstreamBillingRateSyncEnabled = ref(false)
 const mixedScheduling = ref(false) // For antigravity accounts: enable mixed scheduling
 const allowOverages = ref(false) // For antigravity accounts: enable AI Credits overages
@@ -3730,6 +3750,7 @@ const syncFormFromAccount = (newAccount: Account | null) => {
 	upstreamBillingAutoProbeEnabled.value = extra?.upstream_billing_probe_enabled === true
   upstreamBillingRateSyncEnabled.value =
     upstreamBillingAutoProbeEnabled.value && extra?.upstream_billing_rate_sync_enabled === true
+  autoSyncModelsEnabled.value = extra?.auto_sync_models_enabled === true
 
   // Load OpenAI passthrough toggle (OpenAI OAuth/SetupToken/API Key)
   openaiPassthroughEnabled.value = false
@@ -4654,6 +4675,7 @@ const handleSubmit = async () => {
     if (props.account.type === 'apikey') {
       updatePayload.upstream_billing_probe_enabled = upstreamBillingAutoProbeEnabled.value
       updatePayload.upstream_billing_rate_sync_enabled = upstreamBillingRateSyncEnabled.value
+      updatePayload.auto_sync_models_enabled = autoSyncModelsEnabled.value
       if (upstreamBillingRateSyncEnabled.value) {
         delete updatePayload.rate_multiplier
       }
@@ -5277,6 +5299,7 @@ const handleSubmit = async () => {
       if (props.account.type === 'apikey') {
         delete newExtra.upstream_billing_probe_enabled
         delete newExtra.upstream_billing_rate_sync_enabled
+        delete newExtra.auto_sync_models_enabled
       }
       // Total quota
       if (editQuotaLimit.value != null && editQuotaLimit.value > 0) {

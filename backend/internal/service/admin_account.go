@@ -406,6 +406,9 @@ func buildAccountForCreate(input *CreateAccountInput, accountExtra map[string]an
 	delete(accountExtra, OllamaCloudUsageSessionExtraKey)
 	delete(accountExtra, OllamaCloudUsageAutoRefreshExtraKey)
 	delete(accountExtra, OllamaCloudUsageSnapshotExtraKey)
+	delete(accountExtra, AutoSyncModelsEnabledExtraKey)
+	delete(accountExtra, AutoSyncModelsLastSyncAtExtraKey)
+	delete(accountExtra, AutoSyncModelsLastErrorExtraKey)
 	accountExtra = prepareCodexFingerprintExtraForCreate(input.Platform, input.Type, accountExtra)
 	account := &Account{
 		Name:        input.Name,
@@ -428,6 +431,13 @@ func buildAccountForCreate(input *CreateAccountInput, accountExtra map[string]an
 			account.Extra = make(map[string]any)
 		}
 		account.Extra[UpstreamBillingProbeEnabledExtraKey] = true
+	}
+	// Auto-sync models toggle for new accounts.
+	if input.AutoSyncModelsEnabled != nil && *input.AutoSyncModelsEnabled {
+		if account.Extra == nil {
+			account.Extra = make(map[string]any)
+		}
+		account.Extra[AutoSyncModelsEnabledExtraKey] = true
 	}
 	// 预计算固定时间重置的下次重置时间
 	if account.Extra != nil {
@@ -647,6 +657,9 @@ func (s *adminServiceImpl) UpdateAccount(ctx context.Context, id int64, input *U
 		delete(normalizedExtra, OllamaCloudUsageSessionExtraKey)
 		delete(normalizedExtra, OllamaCloudUsageAutoRefreshExtraKey)
 		delete(normalizedExtra, OllamaCloudUsageSnapshotExtraKey)
+		delete(normalizedExtra, AutoSyncModelsEnabledExtraKey)
+		delete(normalizedExtra, AutoSyncModelsLastSyncAtExtraKey)
+		delete(normalizedExtra, AutoSyncModelsLastErrorExtraKey)
 		// 保留配额用量和专用服务受管字段，防止普通账号编辑意外覆盖。
 		for _, key := range []string{
 			"quota_used",
@@ -662,6 +675,9 @@ func (s *adminServiceImpl) UpdateAccount(ctx context.Context, id int64, input *U
 			OllamaCloudUsageAutoRefreshExtraKey,
 			OllamaCloudUsageSnapshotExtraKey,
 			OpenAIAutoResetCreditStateExtraKey,
+			AutoSyncModelsEnabledExtraKey,
+			AutoSyncModelsLastSyncAtExtraKey,
+			AutoSyncModelsLastErrorExtraKey,
 		} {
 			if v, ok := account.Extra[key]; ok {
 				normalizedExtra[key] = v
@@ -718,6 +734,13 @@ func (s *adminServiceImpl) UpdateAccount(ctx context.Context, id int64, input *U
 	}
 	if requestedRateSyncEnabledUpdate != nil {
 		account.Extra[UpstreamBillingRateSyncEnabledExtraKey] = *requestedRateSyncEnabledUpdate
+	}
+	// Auto-sync models toggle: write the typed field into extra.
+	if input.AutoSyncModelsEnabled != nil {
+		if account.Extra == nil {
+			account.Extra = make(map[string]any)
+		}
+		account.Extra[AutoSyncModelsEnabledExtraKey] = *input.AutoSyncModelsEnabled
 	}
 	// 影子代理恒继承母账号(由 propagateProxyToShadows 同步),不接受独立编辑——外审 B/P1;
 	// 否则要等母账号下次改 proxy 才被覆盖,期间影子会出现"有时继承、有时独立"的漂移。
@@ -877,6 +900,9 @@ func (s *adminServiceImpl) UpdateAccountExtra(ctx context.Context, id int64, upd
 	delete(updates, UpstreamBillingProbeEnabledExtraKey)
 	delete(updates, UpstreamBillingRateSyncEnabledExtraKey)
 	delete(updates, UpstreamBillingProbeExtraKey)
+	delete(updates, AutoSyncModelsEnabledExtraKey)
+	delete(updates, AutoSyncModelsLastSyncAtExtraKey)
+	delete(updates, AutoSyncModelsLastErrorExtraKey)
 	delete(updates, OllamaCloudUsageSessionExtraKey)
 	delete(updates, OllamaCloudUsageAutoRefreshExtraKey)
 	delete(updates, OllamaCloudUsageSnapshotExtraKey)
@@ -907,6 +933,9 @@ func (s *adminServiceImpl) BulkUpdateAccounts(ctx context.Context, input *BulkUp
 	delete(input.Extra, OllamaCloudUsageSessionExtraKey)
 	delete(input.Extra, OllamaCloudUsageAutoRefreshExtraKey)
 	delete(input.Extra, OllamaCloudUsageSnapshotExtraKey)
+	delete(input.Extra, AutoSyncModelsEnabledExtraKey)
+	delete(input.Extra, AutoSyncModelsLastSyncAtExtraKey)
+	delete(input.Extra, AutoSyncModelsLastErrorExtraKey)
 
 	if len(input.AccountIDs) == 0 && input.Filters != nil {
 		accountIDs, err := s.resolveBulkUpdateTargetIDs(ctx, input.Filters)

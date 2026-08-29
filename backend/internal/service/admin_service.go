@@ -376,6 +376,7 @@ type CreateAccountInput struct {
 	ExpiresAt          *int64
 	AutoPauseOnExpired *bool
 	ProbeEnabled       *bool
+	AutoSyncModelsEnabled *bool // auto-sync model_mapping from upstream /v1/models
 	// SkipDefaultGroupBind prevents auto-binding to platform default group when GroupIDs is empty.
 	SkipDefaultGroupBind bool
 	// SkipMixedChannelCheck skips the mixed channel risk check when binding groups.
@@ -409,7 +410,8 @@ type UpdateAccountInput struct {
 	AutoPauseOnExpired    *bool
 	ProbeEnabled          *bool
 	RateSyncEnabled       *bool
-	SkipMixedChannelCheck bool // 跳过混合渠道检查（用户已确认风险）
+	AutoSyncModelsEnabled *bool // auto-sync model_mapping from upstream /v1/models
+	SkipMixedChannelCheck bool   // 跳过混合渠道检查（用户已确认风险）
 }
 
 // BulkUpdateAccountsInput describes the payload for bulk updating accounts.
@@ -428,6 +430,7 @@ type BulkUpdateAccountsInput struct {
 	Credentials    map[string]any
 	Extra          map[string]any
 	ProbeEnabled   *bool
+	AutoSyncModelsEnabled *bool // auto-sync model_mapping from upstream /v1/models
 	// SkipMixedChannelCheck skips the mixed channel risk check when binding groups.
 	// This should only be set when the caller has explicitly confirmed the risk.
 	SkipMixedChannelCheck bool

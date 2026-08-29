@@ -317,6 +317,10 @@ export default {
         batchCompleted: 'Probed {count} account(s)',
         batchPartial: 'Probe partially completed: {success} succeeded, {failed} failed'
       },
+      upstreamModelSync: {
+        autoSync: 'Auto-sync upstream model list',
+        autoSyncHint: 'Periodically fetch the upstream /v1/models endpoint and update this account\'s model mapping. Models no longer available upstream are automatically removed.',
+      },
       allPrivacyModes: 'All Privacy States',
       privacyUnset: 'Unset',
       privacyTrainingOff: 'Training data sharing disabled',

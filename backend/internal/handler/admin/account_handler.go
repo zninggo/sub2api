@@ -127,6 +127,7 @@ type CreateAccountRequest struct {
 	ExpiresAt               *int64         `json:"expires_at"`
 	AutoPauseOnExpired      *bool          `json:"auto_pause_on_expired"`
 	ProbeEnabled            *bool          `json:"upstream_billing_probe_enabled"`
+	AutoSyncModelsEnabled   *bool          `json:"auto_sync_models_enabled"`
 	ConfirmMixedChannelRisk *bool          `json:"confirm_mixed_channel_risk"` // 用户确认混合渠道风险
 }
 
@@ -149,6 +150,7 @@ type UpdateAccountRequest struct {
 	AutoPauseOnExpired      *bool          `json:"auto_pause_on_expired"`
 	ProbeEnabled            *bool          `json:"upstream_billing_probe_enabled"`
 	RateSyncEnabled         *bool          `json:"upstream_billing_rate_sync_enabled"`
+	AutoSyncModelsEnabled   *bool          `json:"auto_sync_models_enabled"`
 	ConfirmMixedChannelRisk *bool          `json:"confirm_mixed_channel_risk"` // 用户确认混合渠道风险
 }
 
@@ -168,6 +170,7 @@ type BulkUpdateAccountsRequest struct {
 	Credentials             map[string]any            `json:"credentials"`
 	Extra                   map[string]any            `json:"extra"`
 	ProbeEnabled            *bool                     `json:"upstream_billing_probe_enabled"`
+	AutoSyncModelsEnabled   *bool                     `json:"auto_sync_models_enabled"`
 	ConfirmMixedChannelRisk *bool                     `json:"confirm_mixed_channel_risk"` // 用户确认混合渠道风险
 }
 
@@ -862,6 +865,7 @@ func (h *AccountHandler) Create(c *gin.Context) {
 			ExpiresAt:             req.ExpiresAt,
 			AutoPauseOnExpired:    req.AutoPauseOnExpired,
 			ProbeEnabled:          req.ProbeEnabled,
+			AutoSyncModelsEnabled: req.AutoSyncModelsEnabled,
 			SkipMixedChannelCheck: skipCheck,
 		})
 		if execErr != nil {
@@ -991,6 +995,7 @@ func (h *AccountHandler) Update(c *gin.Context) {
 		AutoPauseOnExpired:    req.AutoPauseOnExpired,
 		ProbeEnabled:          req.ProbeEnabled,
 		RateSyncEnabled:       req.RateSyncEnabled,
+		AutoSyncModelsEnabled: req.AutoSyncModelsEnabled,
 		SkipMixedChannelCheck: skipCheck,
 	})
 	if err != nil {
@@ -2128,6 +2133,7 @@ func (h *AccountHandler) BulkUpdate(c *gin.Context) {
 		Credentials:           req.Credentials,
 		Extra:                 req.Extra,
 		ProbeEnabled:          req.ProbeEnabled,
+		AutoSyncModelsEnabled: req.AutoSyncModelsEnabled,
 		SkipMixedChannelCheck: skipCheck,
 	})
 	if err != nil {

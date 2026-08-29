@@ -184,6 +184,7 @@ func (s *SettingService) InitializeDefaultSettings(ctx context.Context) error {
 		SettingKeyOpsRealtimeMonitoringEnabled: "true",
 		SettingKeyOpsQueryModeDefault:          "auto",
 		SettingKeyOpsMetricsIntervalSeconds:    "60",
+		SettingKeyOpsUpstreamModelSyncIntervalSeconds: "21600", // 6 hours
 
 		// Channel monitor defaults (enabled, 60s)
 		SettingKeyChannelMonitorEnabled:                "true",
